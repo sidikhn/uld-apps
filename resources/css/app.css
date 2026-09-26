@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .action-button {
+        @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all duration-200;
+    }
+
+    .app-sidebar {
+        width: 16rem !important;
+        background: #083d62 !important;
+        color: #f8fafc;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 10px 0 28px rgba(15, 45, 70, 0.24);
+        overflow: visible !important;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .app-sidebar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .app-sidebar > div:first-child {
+        background: #083d62 !important;
+        min-height: 6rem;
+        padding: 1rem 0.75rem;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .app-sidebar > div:first-child img {
+        display: block !important;
+        max-width: 14.5rem !important;
+        max-height: 4.5rem !important;
+        width: 100% !important;
+        height: auto !important;
+        object-fit: contain !important;
+        margin: 0 auto !important;
+    }
+
+    .app-sidebar > div:first-child button {
+        position: fixed !important;
+        left: calc(16rem - 1rem) !important;
+        top: 50vh !important;
+        z-index: 50 !important;
+        transform: translateY(-50%) !important;
+        width: 2rem !important;
+        height: 2rem !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px !important;
+        background: #1b4e71 !important;
+        border: 2px solid #083d62 !important;
+        box-shadow: 0 6px 14px rgba(5, 38, 61, 0.28);
+    }
+
+    body.sidebar-collapsed .app-sidebar > div:first-child button {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .app-sidebar {
+        width: 0 !important;
+        overflow: hidden !important;
+        visibility: hidden !important;
+        box-shadow: none;
+    }
+
+    #show-sidebar {
+        position: fixed !important;
+        left: 0 !important;
+        top: 50vh !important;
+        width: 2rem !important;
+        height: 2rem !important;
+        padding: 0 !important;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0 9999px 9999px 0 !important;
+        background: #1b4e71 !important;
+        border: 2px solid #083d62 !important;
+        box-shadow: 4px 6px 14px rgba(5, 38, 61, 0.22);
+    }
+
+    body:not(.sidebar-collapsed) #show-sidebar {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed #show-sidebar {
+        display: flex !important;
+    }
+
+    .app-sidebar > div.relative > div:first-child {
+        background: rgba(46, 101, 138, 0.72) !important;
+        border: 1px solid rgba(186, 230, 253, 0.12);
+        border-radius: 0.85rem;
+        margin: 1.25rem 0.75rem 1.25rem;
+        color: #f8fafc;
+        box-shadow: 0 8px 18px rgba(5, 38, 61, 0.16);
+    }
+
+    .app-sidebar > div.relative p:first-child {
+        color: #f8fafc !important;
+    }
+
+    .app-sidebar nav a > div {
+        background: transparent !important;
+        color: #cbd5e1 !important;
+        border: 1px solid transparent;
+        border-left: 3px solid transparent;
+        margin-inline: 0.75rem;
+        min-height: 3.25rem;
+        padding-inline: 1rem;
+        border-radius: 0.75rem;
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .app-sidebar nav a > div.sidebar-active,
+    .app-sidebar nav a > div:hover {
+        background: #1b4e71 !important;
+        color: #fff !important;
+        border-left-color: #7dd3fc;
+        border-top-color: rgba(125, 211, 252, 0.08);
+        border-bottom-color: rgba(125, 211, 252, 0.08);
+    }
+
+    .app-sidebar nav a > div:hover {
+        transform: translateX(2px);
+    }
+
+    .app-sidebar nav a > div svg {
+        color: currentColor;
+        flex-shrink: 0;
+        width: 1.25rem;
+        height: 1.25rem;
+        stroke-width: 1.8;
+    }
+
+    .app-sidebar nav a > div svg path,
+    .app-sidebar nav a > div svg ellipse,
+    .app-sidebar nav a > div svg rect,
+    .app-sidebar nav a > div svg polyline,
+    .app-sidebar nav a > div svg circle {
+        stroke: currentColor !important;
+        fill: none !important;
+    }
+
+    .app-main {
+        margin-left: 16rem !important;
+        width: calc(100% - 16rem) !important;
+        box-shadow: inset 8px 0 18px rgba(8, 61, 98, 0.08);
+    }
+
+    body.sidebar-collapsed .app-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}

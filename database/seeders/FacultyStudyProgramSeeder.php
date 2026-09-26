@@ -1,0 +1,53 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Faculty;
+use App\Models\StudyProgram;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
+
+class FacultyStudyProgramSeeder extends Seeder
+{
+    public function run(): void
+    {
+        if (!Schema::hasTable('faculties') || !Schema::hasTable('study_programs')) {
+            $this->command->warn('Tabel fakultas/study_programs belum ada. Jalankan migrate terlebih dahulu.');
+            return;
+        }
+
+        $data = [
+            'Fakultas Biologi' => ['Biologi', 'IUP Biologi', 'Magister Biologi', 'Doktor Biologi'],
+            'Fakultas Ekonomi dan Bisnis' => ['IUP Ekonomi', 'Akuntansi', 'Ilmu Ekonomi', 'Manajemen', 'IUP Akuntansi', 'IUP Manajemen', 'Magister Ekonomika Pembangunan', 'Magister Akuntansi', 'Magister Sains Manajemen', 'Magister Sains Ilmu Ekonomi', 'Magister Sains Akuntansi', 'Magister Manajemen (Kampus Jakarta)', 'Magister Manajemen', 'Doktor Ilmu Manajemen', 'Doktor Ilmu Ekonomi', 'Doktor Ilmu Akuntansi', 'Profesi Akuntan'],
+            'Fakultas Farmasi' => ['Farmasi', 'IUP Farmasi', 'Magister Manajemen Farmasi', 'Magister Ilmu Farmasi', 'Magister Farmasi Klinik', 'Doktor Ilmu Farmasi', 'Profesi Apoteker'],
+            'Fakultas Filsafat' => ['Filsafat', 'Magister Filsafat', 'Doktor Filsafat'],
+            'Fakultas Geografi' => ['Geografi Lingkungan', 'IUP Geografi Lingkungan', 'Kartografi dan Penginderaan Jauh', 'Pembangunan Wilayah', 'Magister Geografi', 'Magister Penginderaan Jauh', 'Doktor Ilmu Geografi'],
+            'Fakultas Hukum' => ['Ilmu Hukum', 'IUP Hukum', 'Magister Hukum Bisnis dan Kenegaraan', 'Magister Hukum Kesehatan', 'Magister Hukum Litigasi', 'Magister Ilmu Hukum LLM Program (International)', 'Magister Ilmu Hukum (Kampus Jakarta)', 'Magister Kenotariatan', 'Doktor Ilmu Hukum'],
+            'Fakultas Ilmu Budaya' => ['Sastra Arab', 'Pariwisata', 'Bahasa dan Sastra Indonesia', 'Bahasa dan Kebudayaan Korea', 'Arkeologi', 'Antropologi Budaya', 'Sejarah', 'Sastra Perancis', 'Sastra Jepang', 'Sastra Jawa', 'Sastra Inggris', 'Magister Arkeologi', 'Magister Antropologi', 'Magister Sejarah', 'Magister Sastra', 'Magister Pengkajian Amerika', 'Magister Linguistik', 'Magister Kajian Budaya Timur Tengah', 'Doktor Pengkajian Amerika', 'Doktor Ilmu-ilmu Humaniora', 'Doktor Antropologi'],
+            'Fakultas Ilmu Sosial dan Ilmu Politik' => ['Ilmu Komunikasi', 'IUP Ilmu Komunikasi', 'IUP Ilmu Hubungan Internasional', 'IUP Manajemen dan Kebijakan Publik', 'Sosiologi', 'Politik dan Pemerintahan', 'Pembangunan Sosial dan Kesejahteraan', 'Manajemen dan Kebijakan Publik', 'Ilmu Hubungan International', 'Magister Ilmu Hubungan Internasional', 'Magister Ilmu Administrasi Publik', 'Magister Sosiologi', 'Magister Politik dan Pemerintahan', 'Magister Pembangunan Sosial dan Kesejahteraan (PSdK)', 'Magister Manajemen dan Kebijakan Publik (MKP)', 'Magister Ilmu Komunikasi', 'Doktor Pembangunan Sosial dan Kesejahteraan', 'Doktor Sosiologi', 'Doktor Manajemen dan Kebijakan Publik', 'Doktor Ilmu Politik', 'Doktor Ilmu Administrasi Publik', 'Doktor Ilmu Komunikasi'],
+            'Fakultas Kedokteran Gigi' => ['Kedokteran Gigi', 'Higiene Gigi', 'Magister Ilmu Kedokteran Gigi', 'Magister Ilmu Kedokteran Gigi Klinis', 'Doktor Ilmu Kedokteran Gigi', 'Profesi Dokter Gigi'],
+            'Fakultas Kedokteran Hewan' => ['Kedokteran Hewan', 'Magister Sains Veteriner', 'Doktor Sains Veteriner', 'Profesi Dokter Hewan'],
+            'Fakultas Kedokteran, Kesehatan Masyarakat, dan Keperawatan' => ['Keperawatan', 'Kedokteran', 'Gizi', 'Magister Kebijakan dan Manajemen Kesehatan', 'Magister Kebidanan', 'Magister Keperawatan', 'Magister Ilmu Pendidikan Kedokteran dan Kesehatan', 'Magister Ilmu Kesehatan Masyarakat', 'Magister Ilmu Kedokteran Tropis', 'Magister Ilmu Kedokteran Klinis', 'Magister Ilmu Biomedik', 'Doktor Ilmu Kedokteran dan Kesehatan', 'Profesi', 'Profesi Dokter', 'Profesi Ners', 'Pendidikan Profesi Dietitian', 'Mikrobiologi Klinik', 'Ilmu Penyakit Dalam', 'Ilmu Kesehatan Anak', 'Ilmu Kedokteran Forensik dan Medikolegal', 'Ilmu Bedah', 'Dermatologi dan Venereologi', 'Ilmu Kedokteran Jiwa', 'Urologi', 'Spesialis Neurologi', 'Radiologi', 'Patologi Anatomi', 'Orthopaedi dan Traumatologi', 'Obstetri dan Ginekologi'],
+            'Fakultas Kehutanan' => ['Kehutanan', 'Magister Ilmu Kehutanan', 'Doktor Ilmu Kehutanan', 'Profesi Insinyur Kehutanan'],
+            'Fakultas Matematika dan Ilmu Pengetahuan Alam' => ['Statistika', 'Matematika', 'Kimia', 'Ilmu Komputer', 'Ilmu Aktuaria', 'Geofisika', 'Fisika', 'Elektronika dan Instrumentasi', 'Magister Matematika', 'Magister Kimia', 'Magister Ilmu Komputer', 'Magister Fisika', 'Magister Elektronika dan Instrumentasi', 'Magister Kecerdasan Artificial', 'Doktor Matematika', 'Doktor Kimia', 'Doktor Ilmu Fisika', 'Doktor Ilmu Komputer'],
+            'Fakultas Pertanian' => ['Teknologi Hasil Perikanan', 'Proteksi Tanaman', 'Penyuluhan dan Komunikasi Pertanian', 'Mikrobiologi Pertanian', 'Manajemen Sumberdaya Akuatik', 'Ilmu Tanah', 'Ekonomi Pertanian dan Agribisnis', 'Akuakultur', 'Agronomi', 'Magister Agronomi', 'Magister Ekonomi Pertanian', 'Magister Fitopatologi', 'Magister Ilmu Hama Tanaman', 'Magister Ilmu Perikanan', 'Magister Ilmu Tanah', 'Magister Manajemen Agribisnis', 'Magister Pemuliaan Tanaman', 'Doktor Ilmu Pertanian'],
+            'Fakultas Peternakan' => ['Ilmu dan Industri Peternakan', 'Magister Ilmu Peternakan', 'Doktor Ilmu Peternakan', 'Profesi Insinyur Peternakan'],
+            'Fakultas Psikologi' => ['Psikologi', 'Magister Psikologi', 'Doktor Ilmu Psikologi', 'Pendidikan Profesi Psikologi'],
+            'Fakultas Teknik' => ['IUP Teknik Kimia', 'Teknologi Informasi', 'IUP Teknik Geodesi', 'Teknik Sipil dan Lingkungan', 'IUP Perencanaan Wilayah dan Kota', 'Teknik Nuklir', 'Teknik Mesin', 'Teknik Kimia', 'Teknik Infrastruktur Lingkungan', 'Teknik Industri', 'Teknik Geologi', 'Teknik Geodesi', 'Teknik Fisika', 'Teknik Elektro', 'Teknik Biomedis', 'Perencanaan Wilayah dan Kota', 'Arsitektur', 'Teknik Sumber Daya Air', 'Magister Teknik Pengendalian Pencemaran Industrial', 'Magister Arsitektur', 'Magister Perencanaan Wilayah dan Kota', 'Magister Rancang Kota', 'Magister Sistem dan Teknik Transportasi', 'Magister Teknik Elektro', 'Magister Teknik Fisika', 'Magister Teknik Geologi', 'Magister Teknik Geomatika', 'Magister Teknik Industri', 'Magister Teknik Kimia', 'Magister Teknik Mesin', 'Magister Teknik Pengelolaan Bencana Alam', 'Magister Teknik Sipil', 'Magister Teknik Sistem', 'Magister Teknologi Informasi', 'Doktor Arsitektur', 'Doktor Perencanaan Wilayah dan Kota', 'Doktor Teknik Elektro', 'Doktor Teknik Geomatika', 'Doktor Teknik Geologi', 'Doktor Teknik Kimia', 'Doktor Teknik Mesin', 'Doktor Teknik Industri', 'Doktor Teknik Sipil', 'Pendidikan Profesi Arsitek', 'Pendidikan Profesi Insinyur'],
+            'Fakultas Teknologi Pertanian' => ['Teknologi Pangan dan Hasil Pertanian', 'Teknologi Industri Pertanian', 'Teknik Pertanian', 'Magister Ilmu dan Teknologi Pangan', 'Magister Teknologi Industri Pertanian', 'Magister Teknologi Hasil Perkebunan', 'Magister Teknik Pertanian', 'Doktor Teknologi Industri Pertanian', 'Doktor Ilmu Teknik Pertanian', 'Doktor Ilmu Pangan'],
+            'Sekolah Pascasarjana' => ['Magister Agama dan Lintas Budaya', 'Magister Teknik Biomedis', 'Magister Studi Kependudukan', 'Magister Penyuluhan dan Komunikasi Pembangunan', 'Magister Pengkajian Seni Pertunjukan dan Seni Rupa', 'Magister Manajemen Pendidikan Tinggi', 'Magister Manajemen Bencana', 'Magister Ketahanan Nasional', 'Magister Kepemimpindan dan Inovasi Kebijakan', 'Magister Kajian Pariwisata', 'Magister Kajian Budaya dan Media', 'Magister Ilmu Lingkungan', 'Magister Bioteknologi', 'Magister Bioetika', 'Doktor Studi Kependudukan', 'Doktor Perekonomian Islam dan Industri Halal', 'Doktor Penyuluhan dan Komunikasi Pembangunan', 'Doktor Pengkajian Seni Pertunjukan dan Seni Rupa', 'Doktor Kepemimpinan dan Inovasi Kebijakan', 'Doktor Kajian Pariwisata', 'Doktor Kajian Budaya dan Media', 'Doktor Inter Religious Studies (IRS)', 'Doktor Ilmu Lingkungan', 'Doktor Ilmu Ketahanan Nasional', 'Doktor Bioteknologi'],
+            'Sekolah Vokasi' => ['Bahasa Jepang untuk Komunikasi Bisnis dan Profesional', 'Sistem Informasi Geografis', 'Akuntansi Sektor Publik', 'Bahasa Inggris', 'Bisnis Perjalanan Wisata', 'Manajemen dan Penilaian Properti', 'Manajemen Informasi Kesehatan', 'Pembangunan Ekonomi Kewilayahan', 'Pengelolaan Arsip dan Rekaman Informasi', 'Pengelolaan Hutan', 'Pengembangan Produk Agroindustri', 'Perbankan', 'Teknologi Veteriner', 'Teknik Pengelolaan dan Pemeliharaan Infrastruktur Sipil', 'Teknik Pengelolaan dan Perawatan Alat Berat', 'Teknik Rekayasa Pelaksanaan Bangunan Sipil', 'Teknologi Rekayasa Elektro', 'Teknologi Rekayasa Instrumentasi dan Kontrol', 'Teknologi Rekayasa Internet', 'Teknologi Rekayasa Mesin', 'Teknologi Rekayasa Perangkat Lunak', 'Teknologi Survei dan Pemetaan Dasar', 'Magister Terapan Keselamatan dan Kesehatan Kerja', 'Magister Terapan Pengembangan Atraksi Wisata'],
+        ];
+
+        foreach ($data as $facultyName => $programs) {
+            $faculty = Faculty::firstOrCreate(['name' => $facultyName]);
+
+            foreach ($programs as $programName) {
+                StudyProgram::firstOrCreate([
+                    'faculty_id' => $faculty->id,
+                    'name' => $programName,
+                ]);
+            }
+        }
+    }
+}
