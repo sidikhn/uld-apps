@@ -8,11 +8,11 @@ Dokumentasi ini digunakan untuk menjalankan project Laravel di laptop baru.
 
 Pastikan sudah menginstall:
 
-* Git
-* PHP (>= 8.x)
-* Composer
-* MySQL
-* Node.js & npm
+- Git
+- PHP (>= 8.x)
+- Composer
+- MySQL
+- Node.js & npm
 
 ---
 
@@ -112,8 +112,8 @@ composer install
 
 ### ❌ Database error
 
-* Pastikan database sudah dibuat
-* Pastikan `.env` sudah benar
+- Pastikan database sudah dibuat
+- Pastikan `.env` sudah benar
 
 ---
 
@@ -131,6 +131,6 @@ File berikut tidak perlu diupload ke GitHub:
 
 ## 👨‍💻 Author
 
-Project by: [Nama Kamu]
+Project by: Hikmah Nursidik
 
 ---
