@@ -72,7 +72,11 @@
                     <div>
                         <h1 class="text-xl font-bold text-slate-800">{{ $mahasiswa->nama }}</h1>
                         <p class="text-xs font-medium text-slate-500 mt-0.5">
+                            Nomor Induk ULD: <span class="text-[#1B4E71] font-mono font-bold">{{ $mahasiswa->nomor_induk_uld ?? '-' }}</span>
+                            <span class="mx-1 text-slate-300">•</span>
                             NIM: <span class="text-slate-800 font-semibold">{{ $mahasiswa->nim ?? '-' }}</span> 
+                            <span class="mx-1 text-slate-300">•</span> 
+                            Jenjang: <span class="text-slate-800 font-semibold">{{ $mahasiswa->pendidikan ?? '-' }}</span>
                             <span class="mx-1 text-slate-300">•</span> 
                             Angkatan: <span class="text-slate-800 font-semibold">{{ $mahasiswa->angkatan ?? '-' }}</span>
                             <span class="mx-1 text-slate-300">•</span> 
@@ -103,6 +107,44 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Riwayat Kelulusan / Alumni Sebelumnya -->
+            @if($mahasiswa->alumniRiwayat && $mahasiswa->alumniRiwayat->count() > 0)
+                <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-4 shadow-sm">
+                    <div class="flex items-center space-x-2 pb-2 mb-2 border-b border-amber-200/60">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                        </svg>
+                        <span class="text-xs font-bold text-amber-900 uppercase tracking-wide">
+                            Rekam Jejak Pendidikan Sebelumnya (Alumni)
+                        </span>
+                    </div>
+                    <div class="space-y-2">
+                        @foreach($mahasiswa->alumniRiwayat as $riwayat)
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3 rounded-lg border border-amber-100 gap-2">
+                                <div>
+                                    <div class="text-sm font-bold text-slate-800">
+                                        Lulusan Jenjang {{ $riwayat->pendidikan ?? 'S1' }} - {{ $riwayat->prodi ?? '-' }} ({{ $riwayat->fakultas ?? '-' }})
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-0.5">
+                                        NIM Lama: <span class="font-semibold text-slate-700">{{ $riwayat->nim }}</span>
+                                        <span class="mx-1 text-slate-300">•</span>
+                                        Angkatan: <span class="font-semibold text-slate-700">{{ $riwayat->angkatan ?? '-' }}</span>
+                                    </div>
+                                </div>
+                                <a href="{{ route('alumni.show', $riwayat->id) }}"
+                                   class="inline-flex items-center space-x-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-medium transition-all shrink-0">
+                                    <span>Lihat Profil Alumni</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             <!-- Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

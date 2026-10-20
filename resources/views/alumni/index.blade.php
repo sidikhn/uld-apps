@@ -99,6 +99,59 @@
                             </button>
                         </form>
 
+                        {{-- Tombol Ekspor & Unduh Massal Alumni --}}
+                        <div class="relative inline-block text-left">
+                            <button
+                                type="button"
+                                onclick="this.nextElementSibling.classList.toggle('hidden')"
+                                class="flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-medium border border-slate-200 rounded-lg px-3.5 py-2 transition-all shadow-sm shrink-0"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#1B4E71]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                <span>Ekspor & Unduh</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+
+                            <div class="hidden absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 py-1.5 divide-y divide-slate-100 border border-slate-100">
+                                <div class="py-1">
+                                    <span class="block px-4 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rekap Data Alumni</span>
+                                    <a href="{{ route('alumni.exportPdf') }}" class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-[#1B4E71] transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                        <div>
+                                            <p class="font-medium">Ekspor PDF (Rekap)</p>
+                                            <p class="text-xs text-slate-400">Format landscape resmi UGM</p>
+                                        </div>
+                                    </a>
+                                    <a href="{{ route('alumni.export') }}" class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        <div>
+                                            <p class="font-medium">Ekspor CSV (Excel)</p>
+                                            <p class="text-xs text-slate-400">Data spreadsheet terstruktur</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="py-1">
+                                    <span class="block px-4 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Berkas Asesmen</span>
+                                    <a href="{{ route('alumni.downloadAllPdf') }}" class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                                        </svg>
+                                        <div>
+                                            <p class="font-medium">Unduh Semua PDF (ZIP)</p>
+                                            <p class="text-xs text-slate-400">Semua surat asesmen per alumni</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Tombol Tambah Data -->
                         @if(auth()->user()->role === 'superadmin')
                             <a href="{{ route('alumni.create') }}" 
@@ -157,7 +210,14 @@
                                         <input type="checkbox" class="select-mahasiswa w-4 h-4 text-[#1B4E71] bg-white border-slate-300 rounded focus:ring-[#1B4E71] focus:ring-2 cursor-pointer transition-all" value="{{ $alumni->id }}">
                                     </td>
                                 @endif
-                                <td class="py-3 px-4 font-medium text-slate-900">{{ $alumni->nama }}</td>
+                                <td class="py-3 px-4 font-medium text-slate-900">
+                                    <div>{{ $alumni->nama }}</div>
+                                    @if($alumni->nomor_induk_uld)
+                                        <span class="inline-block text-[11px] font-mono text-[#1B4E71] bg-sky-50 px-1.5 py-0.5 rounded border border-sky-100 mt-0.5">
+                                            {{ $alumni->nomor_induk_uld }}
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="py-3 px-4">{{ $alumni->nim }}</td>
                                 <td class="py-3 px-4">{{ $alumni->email_aktif }}</td>
                                 <td class="py-3 px-4">{{ $alumni->aktivitas_saat_ini }}</td>

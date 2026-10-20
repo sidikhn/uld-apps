@@ -30,6 +30,8 @@ Thumbs.db
 *.sql
 *.sqlite
 *.deb
+WORKPLAN_ID_ULD.md
+API_EXTERNAL_DOCUMENTATION.md
 
 # Process & Runtime Files
 .run/

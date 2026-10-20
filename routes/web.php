@@ -30,6 +30,8 @@ Route::middleware(['auth', 'view-only'])->group(function () {
     
     Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
     Route::get('/mahasiswa/export', [CsvController::class, 'export'])->defaults('type', 'mahasiswa')->name('mahasiswa.export');
+    Route::get('/mahasiswa/export-pdf', [CsvController::class, 'exportPdf'])->defaults('type', 'mahasiswa')->name('mahasiswa.exportPdf');
+    Route::get('/mahasiswa/download-all-pdf', [CsvController::class, 'downloadAllPdf'])->defaults('type', 'mahasiswa')->name('mahasiswa.downloadAllPdf');
     Route::get('/mahasiswa/template', [CsvController::class, 'template'])->defaults('type', 'mahasiswa')->name('mahasiswa.template');
     Route::post('/mahasiswa/import', [CsvController::class, 'import'])->defaults('type', 'mahasiswa')->name('mahasiswa.import');
     Route::post('/mahasiswa', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
@@ -68,6 +70,8 @@ Route::middleware(['auth', 'view-only'])->group(function () {
     Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
     Route::get('/alumni/create', [AlumniController::class, 'create'])->name('alumni.create');
     Route::get('/alumni/export', [CsvController::class, 'export'])->defaults('type', 'alumni')->name('alumni.export');
+    Route::get('/alumni/export-pdf', [CsvController::class, 'exportPdf'])->defaults('type', 'alumni')->name('alumni.exportPdf');
+    Route::get('/alumni/download-all-pdf', [CsvController::class, 'downloadAllPdf'])->defaults('type', 'alumni')->name('alumni.downloadAllPdf');
     Route::get('/alumni/template', [CsvController::class, 'template'])->defaults('type', 'alumni')->name('alumni.template');
     Route::post('/alumni/import', [CsvController::class, 'import'])->defaults('type', 'alumni')->name('alumni.import');
     Route::post('/alumni', [AlumniController::class, 'store'])->name('alumni.store');
@@ -85,6 +89,8 @@ Route::middleware(['auth', 'view-only'])->group(function () {
     // Proses update and delete
     Route::put('/alumni/{id}', [AlumniController::class, 'update'])->name('alumni.update');
     Route::get('/alumni/{id}', [AlumniController::class, 'show'])->name('alumni.show');
+    Route::get('/alumni/{id}/lanjut-studi', [AlumniController::class, 'lanjutStudiForm'])->name('alumni.lanjutStudiForm');
+    Route::post('/alumni/{id}/lanjut-studi', [AlumniController::class, 'lanjutStudiSubmit'])->name('alumni.lanjutStudiSubmit');
     
     // ROUTE ASESMEN UJIAN
     Route::get('/asesmen-ujian', [AsesmenUjianController::class, 'index'])->name('ujian.index');

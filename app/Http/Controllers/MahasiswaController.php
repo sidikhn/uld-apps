@@ -6,6 +6,7 @@ use App\Models\Alumni;
 use App\Models\Faculty;
 use App\Models\Mahasiswa;
 use App\Models\StudyProgram;
+use App\Services\NomorIndukUldService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -359,6 +360,10 @@ class MahasiswaController extends Controller
             $request,
             $data
         );
+
+        if (empty($data['nomor_induk_uld'])) {
+            $data['nomor_induk_uld'] = NomorIndukUldService::generateNext($data['tahun_asesmen'] ?? date('Y'));
+        }
 
         DB::transaction(function () use (&$mahasiswa, $data) {
 
@@ -1012,6 +1017,10 @@ class MahasiswaController extends Controller
 
                     $data['perlu_update'] =
                         true;
+
+                    if (empty($data['nomor_induk_uld'])) {
+                        $data['nomor_induk_uld'] = $mhs->nomor_induk_uld ?: NomorIndukUldService::generateNext($mhs->tahun_asesmen ?? date('Y'));
+                    }
 
                     Alumni::create($data);
 

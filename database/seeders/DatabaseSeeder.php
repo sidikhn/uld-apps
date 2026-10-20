@@ -30,7 +30,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             FacultyStudyProgramSeeder::class,
-            MahasiswaSeeder::class, // <-- Tambahkan baris ini
+            MahasiswaSeeder::class,
+            AlumniSeeder::class,
         ]);
     }
 }

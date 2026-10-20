@@ -23,6 +23,7 @@ return Application::configure(dirname(__DIR__))
         $middleware->alias([
             'superadmin' => \App\Http\Middleware\EnsureSuperadmin::class,
             'view-only' => \App\Http\Middleware\EnsureViewOnly::class,
+            'verify.external.api' => \App\Http\Middleware\VerifyExternalApiKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

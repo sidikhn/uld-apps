@@ -11,6 +11,7 @@ class Mahasiswa extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'nomor_induk_uld',
         'nama',
         'jenis_kelamin',
         'tanggal_lahir',
@@ -78,5 +79,10 @@ class Mahasiswa extends Model
     public function studyProgram()
     {
         return $this->belongsTo(StudyProgram::class);
+    }
+
+    public function alumniRiwayat()
+    {
+        return $this->hasMany(Alumni::class, 'nomor_induk_uld', 'nomor_induk_uld');
     }
 }

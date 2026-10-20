@@ -9,7 +9,7 @@ class Alumni extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'nama', 'jenis_kelamin', 'tanggal_lahir', 'nim', 'angkatan',
+        'nomor_induk_uld', 'nama', 'jenis_kelamin', 'tanggal_lahir', 'nim', 'angkatan',
         'pendidikan', 'prodi', 'fakultas', 'nomor_hp', 'beasiswa',
         'ragam_disabilitas', 'ragam_pilihan', 'subragam_disabilitas',
         'detail_disabilitas', 'alat_bantu', 'kendala',
@@ -59,5 +59,20 @@ class Alumni extends Model
             return count($parts) > 0 ? implode(', ', $parts) : '-';
         }
         return '-';
+    }
+
+    public function mahasiswaAktif()
+    {
+        return $this->hasOne(Mahasiswa::class, 'nomor_induk_uld', 'nomor_induk_uld');
+    }
+
+    /**
+     * Mengambil riwayat kelulusan jenjang lain dari alumni yang sama (berdasarkan nomor_induk_uld).
+     */
+    public function alumniLain()
+    {
+        return $this->hasMany(Alumni::class, 'nomor_induk_uld', 'nomor_induk_uld')
+            ->where('id', '!=', $this->id)
+            ->orderBy('created_at', 'asc');
     }
 }

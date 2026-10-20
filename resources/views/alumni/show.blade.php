@@ -68,7 +68,11 @@
                     <div>
                         <h1 class="text-2xl font-bold text-slate-800">{{ $alumni->nama }}</h1>
                         <p class="text-sm font-medium text-slate-500 mt-1">
+                            Nomor Induk ULD: <span class="font-mono text-[#1B4E71] font-bold">{{ $alumni->nomor_induk_uld ?? '-' }}</span>
+                            <span class="mx-1.5 text-slate-300">•</span>
                             NIM: <strong class="text-slate-700">{{ $alumni->nim ?? '-' }}</strong>
+                            <span class="mx-1.5 text-slate-300">•</span>
+                            Jenjang: <strong class="text-slate-700">{{ $alumni->pendidikan ?? 'S1' }}</strong>
                         </p>
                         
                         <!-- Disability Badges -->
@@ -100,6 +104,99 @@
                     </a>
                 @endif
             </div>
+
+            <!-- Status Mahasiswa Aktif / Studi Lanjut Card -->
+            @if($alumni->mahasiswaAktif)
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-emerald-600 text-white rounded-lg shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Status Terhubung: Sedang Aktif Kuliah Lanjut
+                            </span>
+                            <div class="text-sm font-semibold text-emerald-950 mt-0.5">
+                                Jenjang {{ $alumni->mahasiswaAktif->pendidikan }} • NIM {{ $alumni->mahasiswaAktif->nim }} • {{ $alumni->mahasiswaAktif->prodi }} ({{ $alumni->mahasiswaAktif->fakultas }})
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('mahasiswa.show', $alumni->mahasiswaAktif->id) }}"
+                       class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all shrink-0">
+                        <span>Lihat Profil Mahasiswa Aktif</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            @else
+                <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-[#1B4E71] text-white rounded-lg shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-[#1B4E71] uppercase tracking-wide">Melanjutkan Kuliah (S2 / S3)?</span>
+                            <div class="text-xs text-slate-600 mt-0.5">
+                                Aktifkan kembali sebagai mahasiswa aktif tanpa menghapus riwayat alumni ini.
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('alumni.lanjutStudiForm', $alumni->id) }}"
+                       class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-[#1B4E71] hover:bg-[#153e5a] text-white rounded-lg text-xs font-semibold shadow-sm transition-all shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>Daftarkan Studi Lanjut</span>
+                    </a>
+                </div>
+            @endif
+
+            {{-- Riwayat Kelulusan Jenjang Lain (Alumni S1 / S2 / D3 / D4) --}}
+            @if($alumni->alumniLain && $alumni->alumniLain->count() > 0)
+                <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-4 shadow-sm">
+                    <div class="flex items-center space-x-2 pb-2 mb-2 border-b border-amber-200/60">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                        </svg>
+                        <span class="text-xs font-bold text-amber-900 uppercase tracking-wide">
+                            Riwayat Kelulusan Jenjang Lain (Alumni)
+                        </span>
+                    </div>
+                    <div class="space-y-2">
+                        @foreach($alumni->alumniLain as $lain)
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3 rounded-lg border border-amber-100 gap-2">
+                                <div>
+                                    <div class="text-sm font-bold text-slate-800">
+                                        Lulusan Jenjang {{ $lain->pendidikan ?? 'S1' }} - {{ $lain->prodi ?? '-' }} ({{ $lain->fakultas ?? '-' }})
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-0.5">
+                                        NIM: <span class="font-semibold text-slate-700">{{ $lain->nim }}</span>
+                                        <span class="mx-1 text-slate-300">•</span>
+                                        Angkatan: <span class="font-semibold text-slate-700">{{ $lain->angkatan ?? '-' }}</span>
+                                        <span class="mx-1 text-slate-300">•</span>
+                                        Aktivitas: <span class="text-slate-700 font-medium">{{ $lain->aktivitas_saat_ini ?? '-' }}</span>
+                                    </div>
+                                </div>
+                                <a href="{{ route('alumni.show', $lain->id) }}"
+                                   class="inline-flex items-center space-x-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-medium transition-all shrink-0">
+                                    <span>Lihat Detail Alumni Ini</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             <!-- Details Section Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

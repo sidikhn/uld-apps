@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumni;
+use App\Models\Faculty;
+use App\Models\Mahasiswa;
+use App\Models\StudyProgram;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\MahasiswaController;
+use App\Services\NomorIndukUldService;
 
 class AlumniController extends Controller
 {
@@ -79,6 +83,10 @@ class AlumniController extends Controller
         $data['ragam_disabilitas'] = $disability['ragam_disabilitas'];
         $data['ragam_pilihan'] = $disability['ragam_pilihan'];
         $data['subragam_disabilitas'] = $disability['subragam_disabilitas'];
+
+        if (empty($data['nomor_induk_uld'])) {
+            $data['nomor_induk_uld'] = NomorIndukUldService::generateNext($data['angkatan'] ?? date('Y'));
+        }
 
         try {
             $alumni = Alumni::create($data);
@@ -328,5 +336,96 @@ class AlumniController extends Controller
     {
         $alumni = Alumni::findOrFail($id);
         return view('alumni.show', compact('alumni'));
+    }
+
+    /**
+     * Menampilkan form pendaftaran studi lanjut / aktif kembali dari alumni.
+     */
+    public function lanjutStudiForm($id)
+    {
+        $alumni = Alumni::findOrFail($id);
+
+        if (empty($alumni->nomor_induk_uld)) {
+            $alumni->update([
+                'nomor_induk_uld' => NomorIndukUldService::generateNext($alumni->angkatan ?? date('Y'))
+            ]);
+        }
+
+        $faculties = Faculty::orderBy('name')->get();
+        return view('alumni.lanjut_studi', compact('alumni', 'faculties'));
+    }
+
+    /**
+     * Memproses pendaftaran studi lanjut / aktif kembali mahasiswa dari alumni.
+     */
+    public function lanjutStudiSubmit(Request $request, $id)
+    {
+        $alumni = Alumni::findOrFail($id);
+
+        $request->validate([
+            'nim' => 'required|string|max:50|unique:mahasiswas,nim',
+            'pendidikan' => 'required|string|max:50',
+            'faculty_id' => 'required|exists:faculties,id',
+            'study_program_id' => 'nullable|exists:study_programs,id',
+            'angkatan' => 'required|string|max:10',
+            'tahun_asesmen' => 'required|string|max:10',
+            'nomor_hp' => 'nullable|string|max:20',
+            'beasiswa' => 'nullable|string|max:255',
+        ]);
+
+        if (empty($alumni->nomor_induk_uld)) {
+            $alumni->update([
+                'nomor_induk_uld' => NomorIndukUldService::generateNext($alumni->angkatan ?? date('Y'))
+            ]);
+        }
+
+        $faculty = Faculty::find($request->faculty_id);
+        $studyProgram = $request->study_program_id ? StudyProgram::find($request->study_program_id) : null;
+
+        $newMahasiswaData = [
+            'nomor_induk_uld' => $alumni->nomor_induk_uld,
+            'nama' => $alumni->nama,
+            'jenis_kelamin' => $alumni->jenis_kelamin,
+            'tanggal_lahir' => $alumni->tanggal_lahir,
+            'nim' => $request->nim,
+            'pendidikan' => $request->pendidikan,
+            'angkatan' => $request->angkatan,
+            'tahun_asesmen' => $request->tahun_asesmen,
+            'faculty_id' => $request->faculty_id,
+            'fakultas' => $faculty ? $faculty->name : '',
+            'study_program_id' => $request->study_program_id,
+            'prodi' => $studyProgram ? $studyProgram->name : '',
+            'nomor_hp' => $request->nomor_hp ?: $alumni->nomor_hp,
+            'beasiswa' => $request->beasiswa ?: $alumni->beasiswa,
+            'ragam_disabilitas' => $alumni->ragam_disabilitas,
+            'ragam_pilihan' => $alumni->ragam_pilihan,
+            'subragam_disabilitas' => $alumni->subragam_disabilitas,
+            'detail_disabilitas' => $alumni->detail_disabilitas,
+            'alat_bantu' => $alumni->alat_bantu,
+            'kendala' => $alumni->kendala,
+            'akomodasi' => $alumni->akomodasi,
+            'pendampingan' => $alumni->pendampingan,
+            'surat_keterangan' => $alumni->surat_keterangan,
+            'surat_keterangan_link' => $alumni->surat_keterangan_link ?? '',
+            'pdf_path' => null,
+        ];
+
+        $mahasiswa = Mahasiswa::create($newMahasiswaData);
+
+        // Generate PDF profil mahasiswa baru
+        try {
+            $pdf = Pdf::loadView('mahasiswa.pdf', compact('mahasiswa'));
+            $pdfFilename = 'mahasiswa_' . preg_replace('/[\/\\\\]/', '-', $mahasiswa->nim) . '.pdf';
+            $pdfPath = 'private/pdf_mahasiswa/' . $pdfFilename;
+            Storage::disk('local')->put($pdfPath, $pdf->output());
+            $mahasiswa->update(['pdf_path' => $pdfPath]);
+        } catch (\Throwable $e) {
+            // PDF generation fallback
+        }
+
+        return redirect()->route('mahasiswa.show', $mahasiswa->id)->with(
+            'success',
+            "Mahasiswa berhasil didaftarkan aktif pada jenjang {$mahasiswa->pendidikan}. Data alumni jenjang sebelumnya ({$alumni->pendidikan}) tetap tersimpan dan terhubung dengan Nomor Induk ULD {$mahasiswa->nomor_induk_uld}."
+        );
     }
 }
