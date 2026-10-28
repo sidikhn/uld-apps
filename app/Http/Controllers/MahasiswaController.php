@@ -301,6 +301,12 @@ class MahasiswaController extends Controller
                 'string',
                 'in:Netra,Rungu,Mental,Fisik,Disabilitas Ganda',
             ],
+
+            'status' => [
+                'nullable',
+                'string',
+                'in:aktif,cuti,meninggal,mengundurkan_diri',
+            ],
         ]);
 
         $data = $request->except([
@@ -655,6 +661,9 @@ class MahasiswaController extends Controller
             'nim' =>
                 'required|string|max:20|unique:mahasiswas,nim,' . $id,
 
+            'status' =>
+                'nullable|string|in:aktif,cuti,meninggal,mengundurkan_diri',
+
             'tahun_asesmen' =>
                 'nullable|string|max:10',
 
@@ -724,6 +733,12 @@ class MahasiswaController extends Controller
             'ragam_disabilitas.*' => [
                 'string',
                 'in:Netra,Rungu,Mental,Fisik,Disabilitas Ganda',
+            ],
+
+            'status' => [
+                'nullable',
+                'string',
+                'in:aktif,cuti,meninggal,mengundurkan_diri',
             ],
         ]);
 
@@ -1035,5 +1050,41 @@ class MahasiswaController extends Controller
                 'success',
                 'Mahasiswa berhasil dipindah ke data alumni.'
             );
+    }
+
+    /**
+     * Memperbarui status mahasiswa secara massal.
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|string',
+            'status' => 'required|string|in:aktif,cuti,meninggal,mengundurkan_diri',
+        ]);
+
+        $ids = array_filter(explode(',', $request->ids));
+
+        if (empty($ids)) {
+            return redirect()
+                ->back()
+                ->with('error', 'Pilih minimal satu data mahasiswa.');
+        }
+
+        $statusLabels = [
+            'aktif' => 'Aktif',
+            'cuti' => 'Cuti',
+            'mengundurkan_diri' => 'Mengundurkan Diri',
+            'meninggal' => 'Meninggal Dunia',
+        ];
+
+        Mahasiswa::whereIn('id', $ids)->update([
+            'status' => $request->status,
+        ]);
+
+        $label = $statusLabels[$request->status] ?? $request->status;
+
+        return redirect()
+            ->route('mahasiswa.index')
+            ->with('success', count($ids) . " data mahasiswa berhasil diubah statusnya menjadi {$label}.");
     }
 }

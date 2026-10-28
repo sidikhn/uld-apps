@@ -28,6 +28,41 @@ class AlumniController extends Controller
 
         return redirect()->route('alumni.index')->with('success', 'Data berhasil dihapus.');
     }
+
+    public function bulkUpdateStatus(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|string',
+            'status' => 'required|string|in:lulus,lulus_bekerja,lulus_mencari_kerja,lulus_studi_lanjut,mengundurkan_diri,meninggal',
+        ]);
+
+        $ids = array_filter(explode(',', $request->ids));
+
+        if (empty($ids)) {
+            return redirect()
+                ->back()
+                ->with('error', 'Pilih minimal satu data alumni.');
+        }
+
+        $statusLabels = [
+            'lulus' => 'Lulus',
+            'lulus_bekerja' => 'Lulus (Bekerja / Wiraswasta)',
+            'lulus_mencari_kerja' => 'Lulus (Sedang Mencari Kerja)',
+            'lulus_studi_lanjut' => 'Lulus (Studi Lanjut)',
+            'mengundurkan_diri' => 'Mengundurkan Diri',
+            'meninggal' => 'Meninggal Dunia',
+        ];
+
+        Alumni::whereIn('id', $ids)->update([
+            'status' => $request->status,
+        ]);
+
+        $label = $statusLabels[$request->status] ?? $request->status;
+
+        return redirect()
+            ->route('alumni.index')
+            ->with('success', count($ids) . " data alumni berhasil diubah statusnya menjadi {$label}.");
+    }
     public function create()
     {
         $subragamOptions = MahasiswaController::getExistingSubragams();
@@ -38,6 +73,7 @@ class AlumniController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
+            'status' => 'nullable|string|in:lulus,lulus_bekerja,lulus_mencari_kerja,lulus_studi_lanjut,mengundurkan_diri,meninggal',
             'nim' => 'required|string|max:20',
             'ragam_disabilitas' => [
                 'required',
@@ -185,6 +221,7 @@ class AlumniController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
+            'status' => 'nullable|string|in:lulus,lulus_bekerja,lulus_mencari_kerja,lulus_studi_lanjut,mengundurkan_diri,meninggal',
             'nim' => 'required|string|max:20|unique:alumnis,nim,' . $id, // nim boleh sama asal milik dirinya
             'ragam_disabilitas' => [
                 'required',

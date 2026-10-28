@@ -12,6 +12,7 @@ class Mahasiswa extends Model
 
     protected $fillable = [
         'nomor_induk_uld',
+        'status',
         'nama',
         'jenis_kelamin',
         'tanggal_lahir',

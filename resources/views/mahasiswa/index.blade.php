@@ -403,12 +403,65 @@
                 </form>
 
                 {{-- =================================================
-                     TOMBOL EKSPOR & UNDUH MASSAL
+                     TOMBOL UBAH STATUS MASSAL (AKTIF, CUTI, MENINGGAL, DLL)
                 ================================================== --}}
-                <div class="relative inline-block text-left" x-data="{ open: false }">
+                <div class="relative text-left hidden" id="status-dropdown-wrapper">
                     <button
                         type="button"
-                        onclick="this.nextElementSibling.classList.toggle('hidden')"
+                        id="status-dropdown-btn"
+                        class="flex items-center gap-1.5
+                               text-sky-800
+                               font-semibold
+                               bg-sky-50
+                               hover:bg-sky-100
+                               border border-sky-200
+                               rounded-lg
+                               px-3.5 py-2
+                               transition-all
+                               cursor-pointer"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>Ubah Status</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" id="status-arrow-icon" class="h-3.5 w-3.5 text-sky-600 ml-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <div id="status-dropdown-menu" class="hidden absolute right-0 mt-2 w-52 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 py-1.5 border border-slate-100">
+                        <form id="bulk-status-form" action="{{ route('mahasiswa.bulkUpdateStatus') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="ids" id="status-ids">
+                            <input type="hidden" name="status" id="target-status">
+
+                            <button type="button" onclick="submitBulkStatus('aktif', 'Aktif')" class="w-full text-left flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors cursor-pointer">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span>Aktif</span>
+                            </button>
+                            <button type="button" onclick="submitBulkStatus('cuti', 'Cuti')" class="w-full text-left flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors cursor-pointer">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                                <span>Cuti</span>
+                            </button>
+                            <button type="button" onclick="submitBulkStatus('mengundurkan_diri', 'Mengundurkan Diri')" class="w-full text-left flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer">
+                                <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                                <span>Mengundurkan Diri</span>
+                            </button>
+                            <button type="button" onclick="submitBulkStatus('meninggal', 'Meninggal Dunia')" class="w-full text-left flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer">
+                                <span class="w-2 h-2 rounded-full bg-slate-700 shrink-0"></span>
+                                <span>Meninggal Dunia</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- =================================================
+                     TOMBOL EKSPOR & UNDUH MASSAL
+                ================================================== --}}
+                <div class="relative inline-block text-left" id="export-dropdown-wrapper">
+                    <button
+                        type="button"
+                        id="export-dropdown-btn"
                         class="flex items-center gap-1.5
                                bg-white hover:bg-slate-50
                                text-slate-700
@@ -418,49 +471,31 @@
                                px-3.5 py-2
                                transition-all
                                shadow-sm
-                               shrink-0"
+                               shrink-0
+                               cursor-pointer"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#1B4E71]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
-                        <span>Ekspor & Unduh</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <span>Ekspor Data</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" id="export-arrow-icon" class="h-3.5 w-3.5 text-slate-400 ml-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
 
-                    <div class="hidden absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 py-1.5 divide-y divide-slate-100 border border-slate-100">
+                    <div id="export-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 py-1.5 divide-y divide-slate-100 border border-slate-100">
                         <div class="py-1">
-                            <span class="block px-4 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rekap Data</span>
-                            <a href="{{ route('mahasiswa.exportPdf') }}" class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-[#1B4E71] transition-colors">
+                            <a href="{{ route('mahasiswa.exportPdf') }}" class="group flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-sky-50 hover:text-[#1B4E71] transition-colors cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                 </svg>
-                                <div>
-                                    <p class="font-medium">Ekspor PDF (Rekap)</p>
-                                    <p class="text-xs text-slate-400">Format landscape resmi UGM</p>
-                                </div>
+                                <span class="font-medium">Ekspor PDF</span>
                             </a>
-                            <a href="{{ route('mahasiswa.export') }}" class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
+                            <a href="{{ route('mahasiswa.export') }}" class="group flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
-                                <div>
-                                    <p class="font-medium">Ekspor CSV (Excel)</p>
-                                    <p class="text-xs text-slate-400">Data spreadsheet terstruktur</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="py-1">
-                            <span class="block px-4 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Berkas Asesmen</span>
-                            <a href="{{ route('mahasiswa.downloadAllPdf') }}" class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                                </svg>
-                                <div>
-                                    <p class="font-medium">Unduh Semua PDF (ZIP)</p>
-                                    <p class="text-xs text-slate-400">Semua surat asesmen per mhs</p>
-                                </div>
+                                <span class="font-medium">Ekspor Excel (.xlsx)</span>
                             </a>
                         </div>
                     </div>
@@ -607,7 +642,8 @@
 
                         @foreach($mahasiswas as $mhs)
 
-                            <tr class="
+                            <tr data-status="{{ $mhs->status ?? 'aktif' }}"
+                                class="
                                 odd:bg-white
                                 even:bg-slate-100/60
                                 hover:bg-sky-50
@@ -649,12 +685,24 @@
                                 {{-- Name --}}
                                 <td class="py-3 px-4 font-medium text-slate-800">
 
-                                    <span class="block max-w-[190px] truncate"
-                                          title="{{ $mhs->nama }}">
-
-                                        {{ $mhs->nama }}
-
-                                    </span>
+                                    <div class="flex items-center gap-1.5 max-w-[210px]">
+                                        <span class="truncate" title="{{ $mhs->nama }}">
+                                            {{ $mhs->nama }}
+                                        </span>
+                                        @if($mhs->status === 'meninggal')
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-700 text-white tracking-wide shrink-0" title="Meninggal Dunia">
+                                                Meninggal Dunia
+                                            </span>
+                                        @elseif($mhs->status === 'cuti')
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 tracking-wide shrink-0">
+                                                Cuti
+                                            </span>
+                                        @elseif($mhs->status === 'mengundurkan_diri')
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 tracking-wide shrink-0">
+                                                Keluar
+                                            </span>
+                                        @endif
+                                    </div>
                                     @if($mhs->nomor_induk_uld)
                                         <span class="inline-block text-[11px] font-mono text-[#1B4E71] bg-sky-50 px-1.5 py-0.2 rounded border border-sky-100 mt-0.5">
                                             {{ $mhs->nomor_induk_uld }}
@@ -1031,6 +1079,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const alumniForm = document.getElementById("alumni-form");
     const alumniIds = document.getElementById("alumni-ids");
 
+    const statusDropdownWrapper = document.getElementById("status-dropdown-wrapper");
+    const statusIds = document.getElementById("status-ids");
+
     const selectAll = document.getElementById("select-all");
 
     const editBtn = document.getElementById("edit-btn");
@@ -1119,6 +1170,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
+            if (statusDropdownWrapper) {
+                statusDropdownWrapper.classList.remove("hidden");
+                statusDropdownWrapper.classList.add("inline-block");
+                statusIds.value =
+                    selected
+                        .map(checkbox => checkbox.value)
+                        .join(",");
+            }
+
         } else {
 
             if (deleteForm) {
@@ -1136,6 +1196,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 alumniIds.value = "";
 
+            }
+
+            if (statusDropdownWrapper) {
+                statusDropdownWrapper.classList.add("hidden");
+                statusDropdownWrapper.classList.remove("inline-block");
+                const statusMenu = document.getElementById('status-dropdown-menu');
+                const statusArrow = document.getElementById('status-arrow-icon');
+                if (statusMenu) statusMenu.classList.add("hidden");
+                if (statusArrow) statusArrow.classList.remove("rotate-180");
+                statusIds.value = "";
             }
 
         }
@@ -1173,6 +1243,9 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
     }
+
+    // Inisialisasi awal tombol bulk hidden
+    updateSelection();
 
 });
 
@@ -1662,8 +1735,64 @@ document.addEventListener(
 
         applyTableFilter();
 
+        // Dropdown toggle & close on outside click untuk Ubah Status
+        const statusBtn = document.getElementById('status-dropdown-btn');
+        const statusMenu = document.getElementById('status-dropdown-menu');
+        const statusArrow = document.getElementById('status-arrow-icon');
+        const statusWrapper = document.getElementById('status-dropdown-wrapper');
+
+        if (statusBtn && statusMenu) {
+            statusBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                statusMenu.classList.toggle('hidden');
+                if (statusArrow) statusArrow.classList.toggle('rotate-180');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (statusWrapper && !statusWrapper.contains(e.target)) {
+                    statusMenu.classList.add('hidden');
+                    if (statusArrow) statusArrow.classList.remove('rotate-180');
+                }
+            });
+        }
+
+        // Dropdown toggle & close on outside click untuk Ekspor Data
+        const exportBtn = document.getElementById('export-dropdown-btn');
+        const exportMenu = document.getElementById('export-dropdown-menu');
+        const exportArrow = document.getElementById('export-arrow-icon');
+        const exportWrapper = document.getElementById('export-dropdown-wrapper');
+
+        if (exportBtn && exportMenu) {
+            exportBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                exportMenu.classList.toggle('hidden');
+                if (exportArrow) exportArrow.classList.toggle('rotate-180');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (exportWrapper && !exportWrapper.contains(e.target)) {
+                    exportMenu.classList.add('hidden');
+                    if (exportArrow) exportArrow.classList.remove('rotate-180');
+                }
+            });
+        }
+
     }
 );
+
+function submitBulkStatus(status, label) {
+    const statusIdsInput = document.getElementById('status-ids');
+    if (!statusIdsInput || !statusIdsInput.value) {
+        alert('Pilih minimal satu mahasiswa terlebih dahulu.');
+        return;
+    }
+
+    const count = statusIdsInput.value.split(',').filter(Boolean).length;
+    if (confirm(`Yakin ingin mengubah status ${count} mahasiswa yang dipilih menjadi "${label}"?`)) {
+        document.getElementById('target-status').value = status;
+        document.getElementById('bulk-status-form').submit();
+    }
+}
 
 </script>
 

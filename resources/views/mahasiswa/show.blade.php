@@ -70,7 +70,26 @@
                     @endif
 
                     <div>
-                        <h1 class="text-xl font-bold text-slate-800">{{ $mahasiswa->nama }}</h1>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-xl font-bold text-slate-800">{{ $mahasiswa->nama }}</h1>
+                            @if($mahasiswa->status === 'meninggal')
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-700 text-white tracking-wide">
+                                    Meninggal Dunia
+                                </span>
+                            @elseif($mahasiswa->status === 'cuti')
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 tracking-wide border border-amber-200">
+                                    Cuti Akademik
+                                </span>
+                            @elseif($mahasiswa->status === 'mengundurkan_diri')
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-rose-100 text-rose-800 tracking-wide border border-rose-200">
+                                    Mengundurkan Diri
+                                </span>
+                            @else
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 tracking-wide border border-emerald-200">
+                                    Mahasiswa Aktif
+                                </span>
+                            @endif
+                        </div>
                         <p class="text-xs font-medium text-slate-500 mt-0.5">
                             Nomor Induk ULD: <span class="text-[#1B4E71] font-mono font-bold">{{ $mahasiswa->nomor_induk_uld ?? '-' }}</span>
                             <span class="mx-1 text-slate-300">•</span>
@@ -188,6 +207,21 @@
                         <div>
                             <dt class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tahun Asesmen</dt>
                             <dd class="text-[#1B4E71] font-bold mt-0.5">{{ $mahasiswa->tahun_asesmen ?? '-' }}</dd>
+                        </div>
+
+                        <div>
+                            <dt class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Status Mahasiswa</dt>
+                            <dd class="mt-0.5">
+                                @if($mahasiswa->status === 'meninggal')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-slate-700 text-white">Meninggal Dunia</span>
+                                @elseif($mahasiswa->status === 'cuti')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800">Cuti Akademik</span>
+                                @elseif($mahasiswa->status === 'mengundurkan_diri')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-rose-100 text-rose-800">Mengundurkan Diri</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800">Aktif</span>
+                                @endif
+                            </dd>
                         </div>
 
                         <div>

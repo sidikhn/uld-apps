@@ -171,7 +171,13 @@ class SyncUldExcelCommand extends Command
             }
 
             if ($alumni) {
-                $alumni->update(['nomor_induk_uld' => $uld]);
+                $payload = ['nomor_induk_uld' => $uld];
+                // Periksa apakah terdapat keterangan meninggal pada baris data
+                $rowText = implode(' ', $rows[$i]);
+                if (preg_match('/meninggal|wafat/i', $rowText)) {
+                    $payload['status'] = 'meninggal';
+                }
+                $alumni->update($payload);
                 $count++;
             }
         }

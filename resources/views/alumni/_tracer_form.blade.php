@@ -63,6 +63,17 @@
                     <input type="{{ $field[2] }}" name="{{ $field[0] }}" value="{{ old($field[0], $alumni->{$field[0]} ?? '') }}" class="w-full border border-gray-300 rounded-2xl p-2 mt-1 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none" required>
                 </div>
             @endforeach
+            <div>
+                <label class="block font-medium text-[#083D62]">Status Alumni</label>
+                <select name="status" class="w-full border border-gray-300 rounded-2xl p-2 mt-1 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none bg-white">
+                    <option value="lulus" @selected(old('status', $alumni->status ?? 'lulus') === 'lulus')>Lulus (Standar / Belum Aktif)</option>
+                    <option value="lulus_bekerja" @selected(old('status', $alumni->status ?? '') === 'lulus_bekerja')>Lulus (Bekerja / Wiraswasta)</option>
+                    <option value="lulus_mencari_kerja" @selected(old('status', $alumni->status ?? '') === 'lulus_mencari_kerja')>Lulus (Sedang Mencari Kerja)</option>
+                    <option value="lulus_studi_lanjut" @selected(old('status', $alumni->status ?? '') === 'lulus_studi_lanjut')>Lulus (Studi Lanjut)</option>
+                    <option value="mengundurkan_diri" @selected(old('status', $alumni->status ?? '') === 'mengundurkan_diri')>Mengundurkan Diri</option>
+                    <option value="meninggal" @selected(old('status', $alumni->status ?? '') === 'meninggal')>Meninggal Dunia</option>
+                </select>
+            </div>
             <div class="md:col-span-2">
                 <label class="block font-medium text-[#083D62] mb-1">
                     Ragam Disabilitas <span class="text-rose-500">*</span>

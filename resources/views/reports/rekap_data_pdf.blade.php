@@ -196,7 +196,15 @@
                         @endif
                     </td>
                     <td>
-                        <b style="color: #0f172a;">{{ $item->nama }}</b><br>
+                        <b style="color: #0f172a;">{{ $item->nama }}</b>
+                        @if(($item->status ?? '') === 'meninggal')
+                            <span style="font-size: 6.5pt; font-weight: bold; background: #334155; color: #ffffff; padding: 1px 4px; border-radius: 2px;">MENINGGAL DUNIA</span>
+                        @elseif(($item->status ?? '') === 'cuti')
+                            <span style="font-size: 6.5pt; font-weight: bold; background: #fef3c7; color: #92400e; padding: 1px 4px; border-radius: 2px;">CUTI</span>
+                        @elseif(($item->status ?? '') === 'mengundurkan_diri')
+                            <span style="font-size: 6.5pt; font-weight: bold; background: #ffe4e6; color: #9f1239; padding: 1px 4px; border-radius: 2px;">KELUAR</span>
+                        @endif
+                        <br>
                         <span style="color: #475569; font-size: 7.5pt;">NIM: {{ $item->nim }}</span><br>
                         <span style="color: #64748b; font-size: 7pt;">Jenjang: {{ $item->pendidikan ?? 'S1' }} ({{ $item->angkatan ?? '-' }})</span>
                     </td>

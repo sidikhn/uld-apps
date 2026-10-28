@@ -62,6 +62,7 @@ Route::middleware(['auth', 'view-only'])->group(function () {
         ->name('mahasiswa.document');
     
     // make alumni
+    Route::post('/mahasiswa/bulk-status', [MahasiswaController::class, 'bulkUpdateStatus'])->name('mahasiswa.bulkUpdateStatus');
     Route::post('/mahasiswa/alumni', [MahasiswaController::class, 'jadikanAlumni'])
     ->name('mahasiswa.jadikanAlumni');
     
@@ -77,6 +78,8 @@ Route::middleware(['auth', 'view-only'])->group(function () {
     Route::post('/alumni', [AlumniController::class, 'store'])->name('alumni.store');
     Route::delete('/alumni/bulk-delete', [AlumniController::class, 'bulkDelete'])
         ->name('alumni.bulkDelete');
+    Route::post('/alumni/bulk-status', [AlumniController::class, 'bulkUpdateStatus'])
+        ->name('alumni.bulkUpdateStatus');
         Route::get('/alumni/{id}/pdf', [AlumniController::class, 'generatePdf'])
         ->name('alumni.pdf');
     Route::get('/alumni/{id}/pdf/download', [AlumniController::class, 'downloadPdf'])

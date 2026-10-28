@@ -66,7 +66,34 @@
                         {{ strtoupper(substr($alumni->nama, 0, 1)) }}
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-slate-800">{{ $alumni->nama }}</h1>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h1 class="text-2xl font-bold text-slate-800">{{ $alumni->nama }}</h1>
+                            @if($alumni->status === 'meninggal')
+                                <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-slate-700 text-white tracking-wide">
+                                    Meninggal Dunia
+                                </span>
+                            @elseif($alumni->status === 'lulus_bekerja')
+                                <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-sky-100 text-sky-800 tracking-wide border border-sky-200">
+                                    Alumni (Bekerja / Wiraswasta)
+                                </span>
+                            @elseif($alumni->status === 'lulus_mencari_kerja')
+                                <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 tracking-wide border border-amber-200">
+                                    Alumni (Mencari Kerja)
+                                </span>
+                            @elseif($alumni->status === 'lulus_studi_lanjut')
+                                <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-indigo-100 text-indigo-800 tracking-wide border border-indigo-200">
+                                    Alumni (Studi Lanjut)
+                                </span>
+                            @elseif($alumni->status === 'mengundurkan_diri')
+                                <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-rose-100 text-rose-800 tracking-wide border border-rose-200">
+                                    Mengundurkan Diri
+                                </span>
+                            @else
+                                <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 tracking-wide border border-emerald-200">
+                                    Alumni Lulus
+                                </span>
+                            @endif
+                        </div>
                         <p class="text-sm font-medium text-slate-500 mt-1">
                             Nomor Induk ULD: <span class="font-mono text-[#1B4E71] font-bold">{{ $alumni->nomor_induk_uld ?? '-' }}</span>
                             <span class="mx-1.5 text-slate-300">•</span>
@@ -212,6 +239,25 @@
                         </h2>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="bg-slate-50/80 p-3 rounded-lg border border-slate-100">
+                                <span class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Status Alumni</span>
+                                <span class="block mt-0.5">
+                                    @if($alumni->status === 'meninggal')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-slate-700 text-white">Meninggal Dunia</span>
+                                    @elseif($alumni->status === 'lulus_bekerja')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-sky-100 text-sky-800 border border-sky-200">Lulus (Bekerja / Wiraswasta)</span>
+                                    @elseif($alumni->status === 'lulus_mencari_kerja')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">Lulus (Mencari Kerja)</span>
+                                    @elseif($alumni->status === 'lulus_studi_lanjut')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">Lulus (Studi Lanjut)</span>
+                                    @elseif($alumni->status === 'mengundurkan_diri')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">Mengundurkan Diri</span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">Lulus</span>
+                                    @endif
+                                </span>
+                            </div>
+
                             <div class="bg-slate-50/80 p-3 rounded-lg border border-slate-100">
                                 <span class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Jenis Kelamin</span>
                                 <span class="block text-slate-800 font-semibold text-sm mt-0.5">{{ $alumni->jenis_kelamin ?? '-' }}</span>

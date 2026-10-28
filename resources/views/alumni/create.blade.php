@@ -120,6 +120,18 @@
                             <label class="block font-medium text-[#083D62]">Nomor HP</label>
                             <input type="text" name="nomor_hp" class="w-full border rounded-2xl p-2  mt-1" required>
                         </div>
+
+                        <div>
+                            <label class="block font-medium text-[#083D62]">Status Alumni</label>
+                            <select name="status" class="w-full border rounded-2xl p-2 mt-1 bg-white">
+                                <option value="lulus" @selected(old('status', 'lulus') === 'lulus')>Lulus (Standar / Belum Aktif)</option>
+                                <option value="lulus_bekerja" @selected(old('status') === 'lulus_bekerja')>Lulus (Bekerja / Wiraswasta)</option>
+                                <option value="lulus_mencari_kerja" @selected(old('status') === 'lulus_mencari_kerja')>Lulus (Sedang Mencari Kerja)</option>
+                                <option value="lulus_studi_lanjut" @selected(old('status') === 'lulus_studi_lanjut')>Lulus (Studi Lanjut)</option>
+                                <option value="mengundurkan_diri" @selected(old('status') === 'mengundurkan_diri')>Mengundurkan Diri</option>
+                                <option value="meninggal" @selected(old('status') === 'meninggal')>Meninggal Dunia</option>
+                            </select>
+                        </div>
                         <div class="col-span-2">
                             <label class="block font-medium text-[#083D62] mb-1">
                                 Ragam Disabilitas <span class="text-rose-500">*</span>

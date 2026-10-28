@@ -571,6 +571,27 @@ html, body { min-height:100%; }
                                 </div>
 
 
+                                {{-- Status Mahasiswa --}}
+                                @if(isset($mahasiswa))
+                                <div class="uld-field">
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                        Status Keberadaan / Kuliah
+                                        <span class="text-rose-500">*</span>
+                                    </label>
+                                    <select
+                                        name="status"
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:bg-white focus:border-[#1B4E71] focus:ring-2 focus:ring-[#1B4E71]/10 focus:outline-none transition-all cursor-pointer">
+                                        <option value="aktif" {{ old('status', $mahasiswa->status ?? 'aktif') === 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="cuti" {{ old('status', $mahasiswa->status ?? '') === 'cuti' ? 'selected' : '' }}>Cuti</option>
+                                        <option value="mengundurkan_diri" {{ old('status', $mahasiswa->status ?? '') === 'mengundurkan_diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
+                                        <option value="meninggal" {{ old('status', $mahasiswa->status ?? '') === 'meninggal' ? 'selected' : '' }}>Meninggal Dunia</option>
+                                    </select>
+                                    <p class="text-[11px] text-slate-400 mt-2">
+                                        Pilih "Meninggal Dunia" jika mahasiswa telah berpulang / meninggal dunia.
+                                    </p>
+                                </div>
+                                @endif
+
                                 {{-- NIM --}}
                                 <div class="uld-field">
                                     <label class="block text-sm font-semibold

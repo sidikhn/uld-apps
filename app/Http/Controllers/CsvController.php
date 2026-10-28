@@ -9,6 +9,11 @@ use App\Services\NomorIndukUldService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use ZipArchive;
 
@@ -17,42 +22,216 @@ class CsvController extends Controller
     private const CONFIG = [
         'mahasiswa' => [
             'model' => Mahasiswa::class,
-            'title' => 'Mahasiswa Aktif',
+            'title' => 'Mahasiswa Disabilitas',
             'pdf_view' => 'mahasiswa.pdf',
-            'fields' => ['nomor_induk_uld', 'nama', 'jenis_kelamin', 'tanggal_lahir', 'nim', 'angkatan', 'tahun_asesmen', 'pendidikan', 'faculty_id', 'study_program_id', 'nomor_hp', 'ragam_disabilitas', 'subragam_disabilitas', 'beasiswa'],
+            'columns' => [
+                'nomor_induk_uld' => 'Nomor Induk ULD',
+                'status' => 'Status',
+                'nama' => 'Nama Mahasiswa',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'tanggal_lahir' => 'Tanggal Lahir',
+                'nim' => 'NIM',
+                'angkatan' => 'Angkatan',
+                'tahun_asesmen' => 'Tahun Asesmen',
+                'pendidikan' => 'Jenjang Pendidikan',
+                'fakultas' => 'Fakultas',
+                'prodi' => 'Program Studi',
+                'nomor_hp' => 'Nomor HP/WA',
+                'beasiswa' => 'Beasiswa',
+                'ragam_disabilitas' => 'Ragam Disabilitas',
+                'subragam_disabilitas' => 'Subragam Disabilitas',
+                'detail_disabilitas' => 'Detail / Diagnosis Disabilitas',
+                'alat_bantu' => 'Alat Bantu',
+                'kendala' => 'Hambatan / Kendala Belajar',
+                'akomodasi' => 'Kebutuhan Akomodasi',
+                'pendampingan' => 'Kebutuhan Pendampingan',
+            ],
+            'fields' => ['nomor_induk_uld', 'status', 'nama', 'jenis_kelamin', 'tanggal_lahir', 'nim', 'angkatan', 'tahun_asesmen', 'pendidikan', 'faculty_id', 'study_program_id', 'nomor_hp', 'ragam_disabilitas', 'subragam_disabilitas', 'beasiswa'],
         ],
         'alumni' => [
             'model' => Alumni::class,
             'title' => 'Alumni Disabilitas',
             'pdf_view' => 'alumni.pdf',
-            'fields' => ['nomor_induk_uld', 'nama', 'nim', 'alamat_domisili', 'email_aktif', 'nomor_hp', 'url_linkedin', 'ragam_disabilitas', 'aktivitas_saat_ini', 'waktu_mendapatkan_pekerjaan_bulan', 'waktu_mulai_mencari_pekerjaan_bulan', 'cara_mendapatkan_pekerjaan', 'jenis_institusi_pekerjaan', 'nama_tempat_kerja', 'alamat_tempat_kerja', 'kontak_tempat_kerja', 'posisi_pekerjaan', 'lama_bekerja', 'kendala_mencari_pekerjaan', 'jenjang_studi_lanjut', 'nama_prodi_studi_lanjut', 'institusi_studi_lanjut', 'lokasi_studi_lanjut', 'tanggal_mulai_studi_lanjut', 'tanggal_selesai_studi_lanjut'],
+            'columns' => [
+                'nomor_induk_uld' => 'Nomor Induk ULD',
+                'status' => 'Status',
+                'nama' => 'Nama Alumni',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'tanggal_lahir' => 'Tanggal Lahir',
+                'nim' => 'NIM',
+                'angkatan' => 'Angkatan',
+                'pendidikan' => 'Jenjang Pendidikan',
+                'fakultas' => 'Fakultas',
+                'prodi' => 'Program Studi',
+                'nomor_hp' => 'Nomor HP/WA',
+                'alamat_domisili' => 'Alamat Domisili',
+                'email_aktif' => 'Email Aktif',
+                'url_linkedin' => 'LinkedIn / Portfolio',
+                'beasiswa' => 'Beasiswa Semasa Kuliah',
+                'ragam_disabilitas' => 'Ragam Disabilitas',
+                'subragam_disabilitas' => 'Subragam Disabilitas',
+                'detail_disabilitas' => 'Detail Disabilitas',
+                'alat_bantu' => 'Alat Bantu',
+                'kendala' => 'Hambatan / Kendala',
+                'akomodasi' => 'Kebutuhan Akomodasi',
+                'pendampingan' => 'Kebutuhan Pendampingan',
+                'aktivitas_saat_ini' => 'Aktivitas Saat Ini',
+                'waktu_mulai_mencari_pekerjaan_bulan' => 'Mulai Mencari Kerja (Bulan)',
+                'waktu_mendapatkan_pekerjaan_bulan' => 'Waktu Mendapatkan Kerja (Bulan)',
+                'cara_mendapatkan_pekerjaan' => 'Cara Mendapatkan Pekerjaan',
+                'jenis_institusi_pekerjaan' => 'Jenis Institusi Tempat Kerja',
+                'nama_tempat_kerja' => 'Nama Tempat Kerja / Perusahaan',
+                'posisi_pekerjaan' => 'Posisi / Jabatan',
+                'lama_bekerja' => 'Lama Bekerja',
+                'alamat_tempat_kerja' => 'Alamat Tempat Kerja',
+                'kontak_tempat_kerja' => 'Kontak Tempat Kerja',
+                'kendala_mencari_pekerjaan' => 'Kendala Mencari Pekerjaan',
+                'jenjang_studi_lanjut' => 'Jenjang Studi Lanjut',
+                'institusi_studi_lanjut' => 'Institusi / Kampus Studi Lanjut',
+                'nama_prodi_studi_lanjut' => 'Program Studi Studi Lanjut',
+                'lokasi_studi_lanjut' => 'Lokasi Studi Lanjut',
+                'tanggal_mulai_studi_lanjut' => 'Mulai Studi Lanjut',
+                'tanggal_selesai_studi_lanjut' => 'Selesai Studi Lanjut',
+            ],
+            'fields' => ['nomor_induk_uld', 'status', 'nama', 'nim', 'alamat_domisili', 'email_aktif', 'nomor_hp', 'url_linkedin', 'ragam_disabilitas', 'aktivitas_saat_ini', 'waktu_mendapatkan_pekerjaan_bulan', 'waktu_mulai_mencari_pekerjaan_bulan', 'cara_mendapatkan_pekerjaan', 'jenis_institusi_pekerjaan', 'nama_tempat_kerja', 'alamat_tempat_kerja', 'kontak_tempat_kerja', 'posisi_pekerjaan', 'lama_bekerja', 'kendala_mencari_pekerjaan', 'jenjang_studi_lanjut', 'nama_prodi_studi_lanjut', 'institusi_studi_lanjut', 'lokasi_studi_lanjut', 'tanggal_mulai_studi_lanjut', 'tanggal_selesai_studi_lanjut'],
         ],
         'tendik' => [
             'model' => Tendik::class,
-            'title' => 'Dosen & Tendik',
+            'title' => 'Dosen & Tenaga Kependidikan',
+            'columns' => [
+                'nama' => 'Nama Lengkap',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'tanggal_lahir' => 'Tanggal Lahir',
+                'no_ktp' => 'No KTP / NIK',
+                'email' => 'Email',
+                'no_hp' => 'Nomor HP/WA',
+                'alamat' => 'Alamat',
+                'nip_nika' => 'NIP / NIKA',
+                'jenis_pegawai' => 'Jenis Pegawai',
+                'kategori_pegawai' => 'Kategori Pegawai',
+                'unit_kerja' => 'Unit Kerja / Fakultas',
+                'pangkat_golongan' => 'Pangkat / Golongan',
+                'ragam_disabilitas' => 'Ragam Disabilitas',
+                'detail_disabilitas' => 'Detail Disabilitas',
+                'alat_bantu' => 'Alat Bantu',
+                'kendala' => 'Kendala Kerja',
+                'akomodasi' => 'Kebutuhan Akomodasi',
+                'pendampingan' => 'Kebutuhan Pendampingan',
+            ],
             'fields' => ['nama', 'tanggal_lahir', 'alamat', 'no_ktp', 'email', 'no_hp', 'nip_nika', 'jenis_pegawai', 'kategori_pegawai', 'unit_kerja', 'pangkat_golongan', 'ragam_disabilitas', 'detail_disabilitas', 'alat_bantu', 'kendala', 'akomodasi', 'pendampingan'],
         ],
     ];
 
     /**
-     * Ekspor Data ke CSV.
+     * Ekspor Data Lengkap ke Excel (.xlsx) dengan nama Fakultas/Prodi, data asesmen, styling profesional.
      */
     public function export(string $type): StreamedResponse
     {
         $config = $this->config($type);
-        $fields = $config['fields'];
+        $columns = $config['columns'] ?? array_combine($config['fields'], array_map(fn($f) => ucwords(str_replace('_', ' ', $f)), $config['fields']));
         $model = $config['model'];
+        $title = $config['title'] ?? ucfirst($type);
 
-        return response()->streamDownload(function () use ($fields, $model) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, $fields);
-            $model::query()->latest()->chunk(500, function ($items) use ($handle, $fields) {
-                foreach ($items as $item) {
-                    fputcsv($handle, array_map(fn ($field) => $this->csvValue($item->{$field}), $fields));
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle(substr($title, 0, 31));
+
+        $headerLabels = array_values($columns);
+        $keys = array_keys($columns);
+
+        // Baris Header
+        $sheet->fromArray([$headerLabels], null, 'A1');
+
+        $totalCols = count($headerLabels);
+        $lastCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalCols);
+        $headerRange = "A1:{$lastCol}1";
+
+        $sheet->getStyle($headerRange)->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 10,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '1B4E71'],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
+            ],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
+
+        // Ambil data dengan eager loading relasi jika mahasiswa
+        $query = $model::query();
+        if ($type === 'mahasiswa') {
+            $query->with(['faculty', 'studyProgram']);
+        }
+        $items = $query->latest()->get();
+
+        $rows = [];
+        foreach ($items as $item) {
+            $row = [];
+            foreach ($keys as $key) {
+                $val = '';
+                if ($key === 'fakultas') {
+                    $val = $item->faculty?->name ?? $item->fakultas ?? '';
+                } elseif ($key === 'prodi') {
+                    $val = $item->studyProgram?->name ?? $item->prodi ?? '';
+                } elseif ($key === 'subragam_disabilitas') {
+                    $val = method_exists($item, 'getSubragamFormattedAttribute') ? $item->subragam_formatted : '';
+                    if ($val === '-') {
+                        $val = '';
+                    }
+                } elseif ($key === 'ragam_disabilitas') {
+                    $raw = $item->ragam_disabilitas;
+                    $val = is_array($raw) ? implode(', ', array_filter(array_map('trim', $raw))) : (string)($raw ?? '');
+                } else {
+                    $raw = $item->{$key} ?? null;
+                    if (is_array($raw)) {
+                        $val = implode(', ', array_filter(array_map('trim', $raw)));
+                    } else {
+                        $val = (string)($raw ?? '');
+                    }
                 }
-            });
-            fclose($handle);
-        }, $type . '-data-' . date('Y-m-d') . '.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+                $row[] = $val;
+            }
+            $rows[] = $row;
+        }
+
+        if (!empty($rows)) {
+            $sheet->fromArray($rows, null, 'A2');
+            $lastRow = count($rows) + 1;
+
+            $sheet->getStyle("A1:{$lastCol}{$lastRow}")->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => 'CBD5E1'],
+                    ],
+                ],
+            ]);
+
+            $sheet->getStyle("A2:{$lastCol}{$lastRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        }
+
+        // Auto size columns dengan batas wajar
+        foreach (range(1, $totalCols) as $colIndex) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex);
+            $sheet->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        $filename = 'Data_Lengkap_' . str_replace(' ', '_', $title) . '_' . date('Y-m-d') . '.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
+        ]);
     }
 
     /**
