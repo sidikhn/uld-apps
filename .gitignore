@@ -32,6 +32,7 @@ Thumbs.db
 *.deb
 WORKPLAN_ID_ULD.md
 API_EXTERNAL_DOCUMENTATION.md
+/docs/*
 
 # Process & Runtime Files
 .run/
